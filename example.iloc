@@ -3,3 +3,13 @@ nop
 nop
 nop
 nop
+
+a:
+add r1, r2 -> r3
+br -> c
+
+b:
+br -> a
+
+c:
+  nop

@@ -1,6 +1,9 @@
 package io.javalanche.covfefe.instructions;
 
+import static org.bytedeco.javacpp.LLVM.LLVMBasicBlockAsValue;
+
 import io.javalanche.covfefe.CompileContext;
+import io.javalanche.covfefe.CovfefeMain;
 import io.javalanche.covfefe.RegisterReferences;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bytedeco.javacpp.LLVM;
+import org.bytedeco.javacpp.LLVM.LLVMBasicBlockRef;
 import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 
 @FunctionalInterface
@@ -15,6 +19,7 @@ public interface InstructionEmitter {
 
   Map<String, InstructionEmitter> emitterMap = Map.ofEntries(
       Map.entry("nop", InstructionNop::nop),
+      Map.entry("br", InstructionBranch::branch),
       Map.entry("add", InstructionArithmetic::add),
       Map.entry("sub", InstructionArithmetic::sub),
       Map.entry("div", InstructionArithmetic::div),
@@ -48,6 +53,10 @@ public interface InstructionEmitter {
           regex.append("(\\d+)");
           valTypes.add(1);
         }
+        else if ('l' == pattern.charAt(pIdx)) {
+          regex.append("(\\w+)");
+          valTypes.add(2);
+        }
         else {
           System.err.println("Unknown pattern type %" + pattern.charAt(pIdx));
           System.err.println("(This is a compiler programmer error)");
@@ -76,6 +85,9 @@ public interface InstructionEmitter {
       else if (valTypes.get(valIdx) == 1) {
         values[valIdx] = LLVM.LLVMConstInt(
             LLVM.LLVMInt32Type(), Integer.parseInt(match.group(valIdx + 1)), 0);
+      }
+      else if (valTypes.get(valIdx) == 2) {
+        values[valIdx] = LLVMBasicBlockAsValue(CovfefeMain.blocks.get(match.group(valIdx + 1)));
       }
     }
 

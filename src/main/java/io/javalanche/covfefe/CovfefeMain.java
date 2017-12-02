@@ -4,15 +4,18 @@ import io.javalanche.covfefe.instructions.InstructionEmitter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.LLVM;
 import org.bytedeco.javacpp.LLVM.*;
 import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.PointerPointer;
 
 import static org.bytedeco.javacpp.LLVM.*;
 
 public class CovfefeMain {
+
+  public static final Map<String, LLVMBasicBlockRef> blocks = new HashMap<>();
 
   public static void main(String[] args) throws IOException {
     if (args.length < 1) {
@@ -20,30 +23,55 @@ public class CovfefeMain {
       System.exit(1);
     }
 
-    Iterator<String> itr = Files.readAllLines(Paths.get(args[0]))
-        .iterator();
+    List<String> lines = Files.readAllLines(Paths.get(args[0]));
+    CompileContext ctx = parse(lines);
 
-    CompileContext ctx = parse(itr);
-    runModule(ctx.moduleRef);
+    runModule(ctx);
   }
 
-  public static CompileContext parse(Iterator<String> iterator) {
+  public static CompileContext parse(List<String> lines) {
     LLVMModuleRef moduleRef = LLVMModuleCreateWithName("my_module");
     LLVMBuilderRef builderRef = LLVMCreateBuilder();
     CompileContext ctx = new CompileContext(moduleRef, builderRef);
 
-    while (iterator.hasNext()) {
-      String instruction = iterator.next();
+    LLVMValueRef main = LLVMAddFunction(moduleRef, "main",
+        LLVMFunctionType(LLVMVoidType(), new PointerPointer<>(new LLVMTypeRef[0]), 0, 0));
 
-      InstructionEmitter emitter = InstructionEmitter.emitterMap.get(instruction.split(" ")[0]);
-      System.out.println(Arrays.toString(emitter.getClass().getAnnotations()));
-      emitter.sink(ctx, instruction);
+    LLVMBasicBlockRef mainBlock = LLVMAppendBasicBlock(main, "");
+
+    lines.stream()
+        .filter(s -> s.trim().matches("\\w+:"))
+        .map(label -> label.substring(0, label.length() - 1))
+        .forEach(label -> blocks.put(label, LLVMAppendBasicBlock(main, label)));
+
+    LLVMPositionBuilderAtEnd(ctx.builderRef, mainBlock);
+
+    for (String instruction : lines) {
+      instruction = instruction.trim();
+      if (instruction.matches("\\w+:")) {
+        LLVMBasicBlockRef blockRef = blocks.get(instruction.substring(0, instruction.length() - 1));
+        if (LLVMGetBasicBlockTerminator(LLVMGetInsertBlock(ctx.builderRef)) == null) {
+          LLVMBuildBr(ctx.builderRef, blockRef);
+        }
+        LLVMPositionBuilderAtEnd(ctx.builderRef, blockRef);
+      }
+      else if (!instruction.isEmpty()) {
+        InstructionEmitter emitter = InstructionEmitter.emitterMap.get(instruction.split(" ")[0]);
+        if (emitter == null) {
+          System.out.printf("I don't know how to emit \"%s\"", instruction);
+        }
+        emitter.sink(ctx, instruction);
+      }
     }
+
+    LLVMBuildRetVoid(ctx.builderRef);
 
     return ctx;
   }
 
-  public static void runModule(LLVMModuleRef moduleRef) {
+  public static void runModule(CompileContext ctx) {
+    LLVMModuleRef moduleRef = ctx.moduleRef;
+
     System.err.println("Your iloc as LLVM:");
     LLVMDumpModule(moduleRef);
 
@@ -70,5 +98,10 @@ public class CovfefeMain {
     LLVMAddGVNPass(pass);
     LLVMAddCFGSimplificationPass(pass);
     LLVMRunPassManager(pass, moduleRef);
+
+    LLVMGenericValueRef exec_res = LLVMRunFunction(engine,
+        LLVMGetNamedFunction(moduleRef, "main"), 0,
+        (LLVMGenericValueRef) null);
+
   }
 }

@@ -1,8 +1,6 @@
 package io.javalanche.covfefe.instructions;
 
 import io.javalanche.covfefe.CompileContext;
-import jdk.internal.instrumentation.InstrumentationTarget;
-import jdk.nashorn.internal.objects.annotations.Function;
 import org.bytedeco.javacpp.LLVM;
 import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 

@@ -4,7 +4,7 @@ import io.javalanche.covfefe.CompileContext;
 
 public class InstructionJumpI {
 
-  public static void jumpI(CompileContext ctx, String[] instruction) {
+  public static void jumpI(CompileContext ctx, String instruction) {
 
   }
 }
