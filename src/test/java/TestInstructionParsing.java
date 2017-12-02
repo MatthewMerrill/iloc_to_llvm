@@ -21,8 +21,8 @@ public class TestInstructionParsing {
   public void parseAdd() {
     CompileContext ctx = new CompileContext(LLVM.LLVMModuleCreateWithName("test_mod"), null);
     LLVMValueRef[] res = InstructionEmitter.parse(ctx,
-        "add %r %r -> %r",
-        "add r1 r2 -> r3");
+        "add %r, %r -> %r",
+        "add r1, r2 -> r3");
     assertThat(res).hasLength(3);
     assertWithMessage("r1 is register")
         .that(LLVM.LLVMGetValueKind(res[0])).isEqualTo(LLVMGlobalVariableValueKind);
@@ -36,8 +36,8 @@ public class TestInstructionParsing {
   public void parseAddI() {
     CompileContext ctx = new CompileContext(LLVM.LLVMModuleCreateWithName("test_mod"), null);
     LLVMValueRef[] res = InstructionEmitter.parse(ctx,
-        "addI %r %c -> %r",
-        "addI r1 2 -> r3");
+        "addI %r, %c -> %r",
+        "addI r1, 2 -> r3");
     assertThat(res).hasLength(3);
     assertWithMessage("r1 is register")
         .that(LLVM.LLVMGetValueKind(res[0])).isEqualTo(LLVMGlobalVariableValueKind);

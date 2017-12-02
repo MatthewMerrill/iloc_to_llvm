@@ -14,7 +14,11 @@ import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 public interface InstructionEmitter {
 
   Map<String, InstructionEmitter> emitterMap = Map.ofEntries(
-      Map.entry("nop", InstructionNop::nop));
+      Map.entry("nop", InstructionNop::nop),
+      Map.entry("add", InstructionArithmetic::add),
+      Map.entry("sub", InstructionArithmetic::sub),
+      Map.entry("div", InstructionArithmetic::div),
+      Map.entry("mul", InstructionArithmetic::mul));
 
   void sink(CompileContext ctx, String instruction);
 
