@@ -23,7 +23,14 @@ public interface InstructionEmitter {
       Map.entry("add", InstructionArithmetic::add),
       Map.entry("sub", InstructionArithmetic::sub),
       Map.entry("div", InstructionArithmetic::div),
-      Map.entry("mul", InstructionArithmetic::mul));
+      Map.entry("mul", InstructionArithmetic::mul),
+      Map.entry("cmp_EQ", InstructionComparison::cmp_eq),
+      Map.entry("cmp_NE", InstructionComparison::cmp_ne),
+      Map.entry("cmp_LE", InstructionComparison::cmp_le),
+      Map.entry("cmp_GE", InstructionComparison::cmp_ge),
+      Map.entry("cmp_LT", InstructionComparison::cmp_lt),
+      Map.entry("cmp_GT", InstructionComparison::cmp_gt)
+  );
 
   void sink(CompileContext ctx, String instruction);
 
