@@ -34,9 +34,9 @@ public class InstructionArithmetic {
   private static void buildArtithmetic(CompileContext ctx, String p, String instr,
       LLVMArithmeticOp op, String opName) {
     LLVMValueRef[] res = InstructionEmitter.parse(ctx, p, instr);
-    LLVMValueRef register1 = LLVMBuildLoad(ctx.builderRef, res[0], opName + "r1_");
-    LLVMValueRef register2 = LLVMBuildLoad(ctx.builderRef, res[1], opName + "r2_");
-    LLVMValueRef ref = op.apply(ctx.builderRef, register1, register2, opName + "div");
+    LLVMValueRef register1 = LLVMBuildLoad(ctx.builderRef, res[0], opName + "_r1_");
+    LLVMValueRef register2 = LLVMBuildLoad(ctx.builderRef, res[1], opName + "_r2_");
+    LLVMValueRef ref = op.apply(ctx.builderRef, register1, register2, opName );
     res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
 
   }
