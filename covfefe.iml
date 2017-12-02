@@ -26,5 +26,20 @@
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:macosx-x86_64:3.9.0-1.3" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:3.9.0-1.3" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.3" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.truth:truth:0.35" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:22.0-android" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.errorprone:error_prone_annotations:2.0.19" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.5" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm-platform:3.9.0-1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:linux-x86:3.9.0-1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:linux-x86_64:3.9.0-1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:macosx-x86_64:3.9.0-1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:llvm:3.9.0-1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.3" level="project" />
   </component>
 </module>

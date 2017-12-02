@@ -7,7 +7,7 @@ import java.util.Map;
 public interface InstructionEmitter {
 
   Map<String, InstructionEmitter> emitterMap = Map.ofEntries(
-      Map.entry("nop", NopInstruction::nop));
+      Map.entry("nop", InstructionNop::nop));
 
   void sink(CompileContext ctx, String[] instruction);
 

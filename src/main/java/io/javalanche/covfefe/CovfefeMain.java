@@ -1,14 +1,10 @@
 package io.javalanche.covfefe;
 
 import io.javalanche.covfefe.instructions.InstructionEmitter;
-import io.javalanche.covfefe.instructions.NopInstruction;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.LLVM.*;
 import org.bytedeco.javacpp.Pointer;
