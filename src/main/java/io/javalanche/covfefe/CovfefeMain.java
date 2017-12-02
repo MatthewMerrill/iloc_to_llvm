@@ -1,3 +1,14 @@
+package io.javalanche.covfefe;
+
+import io.javalanche.covfefe.instructions.InstructionEmitter;
+import io.javalanche.covfefe.instructions.NopInstruction;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.LLVM.*;
 import org.bytedeco.javacpp.Pointer;
@@ -6,9 +17,32 @@ import static org.bytedeco.javacpp.LLVM.*;
 
 public class CovfefeMain {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    if (args.length < 1) {
+      System.err.println("Provide iloc file as first arg!");
+      System.exit(1);
+    }
+
+    Iterator<String[]> itr = Files.readAllLines(Paths.get(args[0]))
+        .stream()
+        .map(s -> s.trim().split(" "))
+        .iterator();
+
+    CompileContext ctx = parse(itr);
+    runModule(ctx.moduleRef);
+  }
+
+  public static CompileContext parse(Iterator<String[]> iterator) {
     LLVMModuleRef moduleRef = LLVMModuleCreateWithName("my_module");
-    runModule(moduleRef);
+    LLVMBuilderRef builderRef = LLVMCreateBuilder();
+    CompileContext ctx = new CompileContext(moduleRef, builderRef);
+
+    while (iterator.hasNext()) {
+      String[] instruction = iterator.next();
+      InstructionEmitter.emitterMap.get(instruction[0]).sink(ctx, instruction);
+    }
+
+    return ctx;
   }
 
   public static void runModule(LLVMModuleRef moduleRef) {
