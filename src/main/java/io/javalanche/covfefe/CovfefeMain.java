@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
@@ -23,23 +24,24 @@ public class CovfefeMain {
       System.exit(1);
     }
 
-    Iterator<String[]> itr = Files.readAllLines(Paths.get(args[0]))
-        .stream()
-        .map(s -> s.trim().split(" "))
+    Iterator<String> itr = Files.readAllLines(Paths.get(args[0]))
         .iterator();
 
     CompileContext ctx = parse(itr);
     runModule(ctx.moduleRef);
   }
 
-  public static CompileContext parse(Iterator<String[]> iterator) {
+  public static CompileContext parse(Iterator<String> iterator) {
     LLVMModuleRef moduleRef = LLVMModuleCreateWithName("my_module");
     LLVMBuilderRef builderRef = LLVMCreateBuilder();
     CompileContext ctx = new CompileContext(moduleRef, builderRef);
 
     while (iterator.hasNext()) {
-      String[] instruction = iterator.next();
-      InstructionEmitter.emitterMap.get(instruction[0]).sink(ctx, instruction);
+      String instruction = iterator.next();
+
+      InstructionEmitter emitter = InstructionEmitter.emitterMap.get(instruction.split(" ")[0]);
+      System.out.println(Arrays.toString(emitter.getClass().getAnnotations()));
+      emitter.sink(ctx, instruction);
     }
 
     return ctx;

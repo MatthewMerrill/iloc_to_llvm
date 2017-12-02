@@ -4,7 +4,7 @@ import io.javalanche.covfefe.CompileContext;
 
 public class NopInstruction {
 
-  public static void nop(CompileContext ctx, String[] instruction) {
-
+  public static void nop(CompileContext ctx, String instruction) {
+    InstructionEmitter.parse(ctx, "nop", instruction);
   }
 }
