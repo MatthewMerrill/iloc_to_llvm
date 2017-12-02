@@ -6,6 +6,23 @@ import io.javalanche.covfefe.CompileContext;
 import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 
 class InstructionComparison {
+
+  static void and(CompileContext ctx, String instruction) {
+    LLVMValueRef[] res = InstructionEmitter.parse(ctx, "and %r, %r -> %r", instruction);
+    LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], "and_r1_");
+    LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], "and_r2_");
+    LLVMValueRef ref = LLVMBuildAnd(ctx.builderRef, leftside, rightside, "and_r2");
+    res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
+  }
+
+  static void or(CompileContext ctx, String instruction) {
+    LLVMValueRef[] res = InstructionEmitter.parse(ctx, "or %r, %r -> %r", instruction);
+    LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], "or_r1_");
+    LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], "or_r2_");
+    LLVMValueRef ref = LLVMBuildOr(ctx.builderRef, leftside, rightside, "or_r2");
+    res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
+  }
+  
   static void cmp_eq(CompileContext ctx, String instruction) {
     buildComparison(ctx, "cmp_EQ %r, %r -> %r", instruction, LLVMIntEQ, "cmp_EQ");
   }
@@ -29,8 +46,6 @@ class InstructionComparison {
   static void cmp_gt(CompileContext ctx, String instruction) {
     buildComparison(ctx, "cmp_GT %r, %r -> %r", instruction, LLVMIntSGT, "cmp_GT");
   }
-
-
 
   private static void buildComparison(CompileContext ctx, String p, String instruction,
       int op, String opName) {

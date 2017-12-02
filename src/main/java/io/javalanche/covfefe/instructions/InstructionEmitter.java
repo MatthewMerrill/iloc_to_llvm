@@ -24,6 +24,8 @@ public interface InstructionEmitter {
       Map.entry("sub", InstructionArithmetic::sub),
       Map.entry("div", InstructionArithmetic::div),
       Map.entry("mul", InstructionArithmetic::mul),
+      Map.entry("and", InstructionComparison::and),
+      Map.entry("or", InstructionComparison::or),
       Map.entry("cmp_EQ", InstructionComparison::cmp_eq),
       Map.entry("cmp_NE", InstructionComparison::cmp_ne),
       Map.entry("cmp_LE", InstructionComparison::cmp_le),
