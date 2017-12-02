@@ -8,21 +8,21 @@ import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 
 import static org.bytedeco.javacpp.LLVM.*;
 
-public class InstructionArithmetic {
+class InstructionArithmetic {
 
-  public static void add(CompileContext ctx, String instruction) {
+  static void add(CompileContext ctx, String instruction) {
     buildArtithmetic(ctx, "add %r, %r -> %r", instruction, LLVM::LLVMBuildAdd, "add");
   }
 
-  public static void sub(CompileContext ctx, String instruction) {
+  static void sub(CompileContext ctx, String instruction) {
     buildArtithmetic(ctx, "sub %r, %r -> %r", instruction, LLVM::LLVMBuildSub, "sub");
   }
 
-  public static void mul(CompileContext ctx, String instruction) {
+  static void mul(CompileContext ctx, String instruction) {
     buildArtithmetic(ctx, "mul %r, %r -> %r", instruction, LLVM::LLVMBuildMul, "mul");
   }
 
-  public static void div(CompileContext ctx, String instruction) {
+  static void div(CompileContext ctx, String instruction) {
     buildArtithmetic(ctx, "div %r, %r -> %r", instruction, LLVM::LLVMBuildSDiv, "div");
   }
 
