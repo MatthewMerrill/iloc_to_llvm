@@ -22,7 +22,7 @@ class InstructionComparison {
     LLVMValueRef ref = LLVMBuildOr(ctx.builderRef, leftside, rightside, "or_r2");
     res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
   }
-  
+
   static void cmp_eq(CompileContext ctx, String instruction) {
     buildComparison(ctx, "cmp_EQ %r, %r -> %r", instruction, LLVMIntEQ, "cmp_EQ");
   }

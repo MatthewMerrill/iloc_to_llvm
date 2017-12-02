@@ -20,6 +20,7 @@ public interface InstructionEmitter {
   Map<String, InstructionEmitter> emitterMap = Map.ofEntries(
       Map.entry("nop", InstructionNop::nop),
       Map.entry("br", InstructionBranch::branch),
+      Map.entry("cbr", InstructionBranch::condition),
       Map.entry("add", InstructionArithmetic::add),
       Map.entry("sub", InstructionArithmetic::sub),
       Map.entry("div", InstructionArithmetic::div),
