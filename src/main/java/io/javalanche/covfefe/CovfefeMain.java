@@ -1,6 +1,7 @@
 package io.javalanche.covfefe;
 
 import io.javalanche.covfefe.instructions.InstructionEmitter;
+import io.javalanche.covfefe.instructions.InstructionStore;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,6 +12,7 @@ import org.bytedeco.javacpp.LLVM.*;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 
+import static io.javalanche.covfefe.RegisterReferences.getUsedRegisters;
 import static org.bytedeco.javacpp.LLVM.*;
 
 public class CovfefeMain {
@@ -34,6 +36,12 @@ public class CovfefeMain {
     LLVMBuilderRef builderRef = LLVMCreateBuilder();
     CompileContext ctx = new CompileContext(moduleRef, builderRef);
 
+    LLVMValueRef printf = LLVMAddFunction(moduleRef, "printf",
+        LLVMFunctionType(LLVMInt32Type(),
+            new PointerPointer<>(new LLVMTypeRef[]{
+                LLVMPointerType(LLVMInt8Type(), 0)
+            }), 1, 1));
+
     LLVMValueRef main = LLVMAddFunction(moduleRef, "main",
         LLVMFunctionType(LLVMVoidType(), new PointerPointer<>(new LLVMTypeRef[0]), 0, 0));
 
@@ -45,6 +53,7 @@ public class CovfefeMain {
         .forEach(label -> blocks.put(label, LLVMAppendBasicBlock(main, label)));
 
     LLVMPositionBuilderAtEnd(ctx.builderRef, mainBlock);
+    MemoryManager.init(ctx, 128);
 
     for (String instruction : lines) {
       instruction = instruction.trim();
@@ -62,6 +71,21 @@ public class CovfefeMain {
         }
         emitter.sink(ctx, instruction);
       }
+    }
+
+    for (String register : getUsedRegisters()) {
+      LLVMBuildCall(ctx.builderRef, printf, new PointerPointer<>(
+              LLVMBuildGlobalStringPtr(ctx.builderRef, register + ": %d\n", ""),
+              LLVMBuildLoad(ctx.builderRef, RegisterReferences.getRef(ctx, register), "")),
+          2, "");
+    }
+
+    InstructionStore.storedIntegers.sort(Long::compare);
+    for (Long integer : InstructionStore.storedIntegers) {
+      LLVMBuildCall(ctx.builderRef, printf, new PointerPointer<>(
+              LLVMBuildGlobalStringPtr(ctx.builderRef, "MEM[" +integer+ "]: %d\n", ""),
+              MemoryManager.loadMem(ctx, LLVMConstInt(LLVMInt32Type(), integer, 0))),
+          2, "");
     }
 
     LLVMBuildRetVoid(ctx.builderRef);

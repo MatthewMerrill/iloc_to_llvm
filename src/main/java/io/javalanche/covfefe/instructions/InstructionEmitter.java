@@ -18,13 +18,17 @@ import org.bytedeco.javacpp.LLVM.LLVMValueRef;
 public interface InstructionEmitter {
 
   Map<String, InstructionEmitter> emitterMap = Map.ofEntries(
+      Map.entry("loadi", InstructionLoad::loadi),
+      Map.entry("loadAI", InstructionLoad::loadAI),
+      Map.entry("storeAI", InstructionStore::storeAI),
       Map.entry("nop", InstructionNop::nop),
       Map.entry("br", InstructionBranch::branch),
+      Map.entry("jumpi", InstructionBranch::branch),
       Map.entry("cbr", InstructionBranch::condition),
       Map.entry("add", InstructionArithmetic::add),
       Map.entry("sub", InstructionArithmetic::sub),
       Map.entry("div", InstructionArithmetic::div),
-      Map.entry("mul", InstructionArithmetic::mul),
+      Map.entry("mult", InstructionArithmetic::mult),
       Map.entry("and", InstructionComparison::and),
       Map.entry("or", InstructionComparison::or),
       Map.entry("cmp_EQ", InstructionComparison::cmp_eq),

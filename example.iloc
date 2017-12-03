@@ -5,11 +5,18 @@ nop
 nop
 
 a:
-add r1, r2 -> r3
-br -> c
+
+  loadi 1 -> r1
+  loadi 1 -> r2
+  cmp_LE r1, r2 -> r3
+  cbr r3 -> b, c
 
 b:
-br -> a
+  loadi 42 -> r3
+  br -> d
 
 c:
+  loadi 69 -> r3
+
+d:
   nop

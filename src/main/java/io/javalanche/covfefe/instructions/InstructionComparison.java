@@ -12,7 +12,8 @@ class InstructionComparison {
     LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], "and_r1_");
     LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], "and_r2_");
     LLVMValueRef ref = LLVMBuildAnd(ctx.builderRef, leftside, rightside, "and_r2");
-    res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
+    res[2] = LLVMBuildStore(ctx.builderRef,
+        LLVMBuildIntCast(ctx.builderRef, ref, LLVMInt32Type(), ""), res[2]);
   }
 
   static void or(CompileContext ctx, String instruction) {
@@ -20,7 +21,8 @@ class InstructionComparison {
     LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], "or_r1_");
     LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], "or_r2_");
     LLVMValueRef ref = LLVMBuildOr(ctx.builderRef, leftside, rightside, "or_r2");
-    res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
+    res[2] = LLVMBuildStore(ctx.builderRef,
+        LLVMBuildIntCast(ctx.builderRef, ref, LLVMInt32Type(), ""), res[2]);
   }
 
   static void cmp_eq(CompileContext ctx, String instruction) {
@@ -50,9 +52,10 @@ class InstructionComparison {
   private static void buildComparison(CompileContext ctx, String p, String instruction,
       int op, String opName) {
     LLVMValueRef[] res = InstructionEmitter.parse(ctx, p, instruction);
-    LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], opName+"_r1_");
-    LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], opName+"_r2_");
+    LLVMValueRef leftside = LLVMBuildLoad(ctx.builderRef, res[0], opName + "_r1_");
+    LLVMValueRef rightside = LLVMBuildLoad(ctx.builderRef, res[1], opName + "_r2_");
     LLVMValueRef ref = LLVMBuildICmp(ctx.builderRef, op, leftside, rightside, opName);
-    res[2] = LLVMBuildStore(ctx.builderRef, ref, res[2]);
+    res[2] = LLVMBuildStore(ctx.builderRef,
+        LLVMBuildIntCast(ctx.builderRef, ref, LLVMInt32Type(), ""), res[2]);
   }
 }

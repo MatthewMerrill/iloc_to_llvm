@@ -16,8 +16,8 @@ class InstructionArithmetic {
     buildArtithmetic(ctx, "sub %r, %r -> %r", instruction, LLVM::LLVMBuildSub, "sub");
   }
 
-  static void mul(CompileContext ctx, String instruction) {
-    buildArtithmetic(ctx, "mul %r, %r -> %r", instruction, LLVM::LLVMBuildMul, "mul");
+  static void mult(CompileContext ctx, String instruction) {
+    buildArtithmetic(ctx, "mult %r, %r -> %r", instruction, LLVM::LLVMBuildMul, "mult");
   }
 
   static void div(CompileContext ctx, String instruction) {
